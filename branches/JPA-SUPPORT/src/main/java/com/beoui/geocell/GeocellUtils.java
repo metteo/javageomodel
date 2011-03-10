@@ -12,8 +12,14 @@ and limitations under the License.
  */
 package com.beoui.geocell;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -531,15 +537,50 @@ public final class GeocellUtils {
         	field = getField(entity.getClass(), Id.class);
     	}
 
-    	try {
-	        return field.get(entity).toString();
-        } catch (IllegalArgumentException e) {
-	        // TODO Auto-generated catch block
-			return null;
-        } catch (IllegalAccessException e) {
-	        // TODO Auto-generated catch block
-			return null;
-        }
+    	if(field != null) {
+	    	try {
+		        return field.get(entity).toString();
+	        } catch (IllegalArgumentException e) {
+		        // TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+	        } catch (IllegalAccessException e) {
+		        // TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+	        }
+    	} else {
+    		Method getter = null;
+    		try {
+				getter = getReadMethod(entity.getClass(), PrimaryKey.class);
+			} catch (IntrospectionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	if(getter == null) {
+        		try {
+					getter = getReadMethod(entity.getClass(), Id.class);
+				} catch (IntrospectionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        	try {
+				return getter.invoke(entity).toString();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+    	}
     }
 
 	private static Field getField(Class<?> type, Class<? extends Annotation> annotation) {
@@ -555,15 +596,33 @@ public final class GeocellUtils {
     		}
     	}
 
-	    Class<?> superClass = type.getSuperclass();
+		Class<?> superClass = type.getSuperclass();
 	    if(superClass != null) {
 	    	return getField(superClass, annotation);
 	    }
 
 	    return null;
     }
+	
+	private static Method getReadMethod(Class<?> type, Class<? extends Annotation> annotation) throws IntrospectionException {
+	    BeanInfo beanInfo = Introspector.getBeanInfo(type);
+		for(PropertyDescriptor property : beanInfo.getPropertyDescriptors()) {
+			Method setter = property.getWriteMethod();
+			Method getter = property.getReadMethod();
+			if(getter != null && ((setter != null && setter.isAnnotationPresent(annotation)) || getter.isAnnotationPresent(annotation))) {
+				return getter;
+			}
+		}
+		
+		Class<?> superClass = type.getSuperclass();
+	    if(superClass != null) {
+	    	return getReadMethod(superClass, annotation);
+	    }
 
-    public static Point getLocation(Object entity) {
+	    return null;
+	}
+
+	public static Point getLocation(Object entity) {
     	if(entity instanceof LocationCapable) {
     		return ((LocationCapable) entity).getLocation();
     	}
