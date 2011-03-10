@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.beoui.geocell.model.Point;
 import com.beoui.utils.JPAEntity;
+import com.beoui.utils.JPAEntityWithAnnotatedProperties;
 
 /**
  * Port of http://code.google.com/p/geomodel/source/browse/trunk/geo/geocell_test.py
@@ -43,6 +44,17 @@ public class GeocellUtilsTest {
 	@Test
 	public void testGetKeyString() {
 		JPAEntity entity = new JPAEntity();
+		entity.setId(TEST_KEY_STRING);
+
+		String keyString = GeocellUtils.getKeyString(entity);
+
+		assertNotNull(keyString);
+		assertEquals(TEST_KEY_STRING, keyString);
+	}
+	
+	@Test
+	public void testGetKeyStringAnnotatedPropertyGetter() {
+		JPAEntityWithAnnotatedProperties entity = new JPAEntityWithAnnotatedProperties();
 		entity.setId(TEST_KEY_STRING);
 
 		String keyString = GeocellUtils.getKeyString(entity);
