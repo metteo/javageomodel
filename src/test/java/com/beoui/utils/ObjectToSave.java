@@ -19,23 +19,28 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.beoui.geocell.model.LocationCapable;
+import com.beoui.geocell.annotations.Geocells;
+import com.beoui.geocell.annotations.Latitude;
+import com.beoui.geocell.annotations.Longitude;
 import com.beoui.geocell.model.Point;
 
 @PersistenceCapable
-public class ObjectToSave implements LocationCapable {
+public class ObjectToSave {
 
     @PrimaryKey
     @Persistent
     private long id;
 
     @Persistent
+    @Latitude
     private double latitude;
 
     @Persistent
+    @Longitude
     private double longitude;
 
     @Persistent
+    @Geocells
     private List<String> geocells;
 
     public long getId() {
@@ -71,13 +76,12 @@ public class ObjectToSave implements LocationCapable {
     }
 
 	@Override
-	public Point getLocation() {
-		return new Point(longitude, latitude);
+	public String getKeyString() {
+		return getLocation().toString();
 	}
 
 	@Override
-	public String getKeyString() {
-		return Long.toString(id);
+	public Point getLocation() {
+		return new Point(latitude, longitude);
 	}
-
 }

@@ -315,9 +315,18 @@ public class GeocellManager {
 	   return proximitySearch(center, maxResults, maxDistance, entityClass, baseQuery, queryEngine, maxGeocellResolution);
    }
 
+   public static final <T> List<T> proximitySearch(Point center, int maxResults, double maxDistance, Class<T> entityClass, GeocellQuery baseQuery, PersistenceManager pm) {       
+       return proximitySearch(center, maxResults, maxDistance, entityClass, baseQuery, pm, MAX_GEOCELL_RESOLUTION);
+   }
+   
+   public static final <T> List<T> proximitySearch(Point center, int maxResults, double maxDistance, Class<T> entityClass, GeocellQuery baseQuery, PersistenceManager pm, int maxGeocellResolution) {       
+	   JDOGeocellQueryEngine queryEngine = new JDOGeocellQueryEngine();
+	   queryEngine.setPersistenceManager(pm);
+       return proximitySearch(center, maxResults, maxDistance, entityClass, baseQuery, queryEngine, maxGeocellResolution);
+   }
+
+   
    public static final <T> List<T> proximitySearch(Point center, int maxResults, double maxDistance, Class<T> entityClass, GeocellQuery baseQuery, EntityManager em) {       
-	   JPAGeocellQueryEngine queryEngine = new JPAGeocellQueryEngine();
-	   queryEngine.setEntityManager(em);
        return proximitySearch(center, maxResults, maxDistance, entityClass, baseQuery, em, MAX_GEOCELL_RESOLUTION);
    }
    
