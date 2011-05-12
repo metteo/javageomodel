@@ -22,7 +22,6 @@ import javax.jdo.annotations.PrimaryKey;
 import com.beoui.geocell.annotations.Geocells;
 import com.beoui.geocell.annotations.Latitude;
 import com.beoui.geocell.annotations.Longitude;
-import com.beoui.geocell.model.Point;
 
 @PersistenceCapable
 public class ObjectToSave {
@@ -74,14 +73,4 @@ public class ObjectToSave {
     public void setGeocells(List<String> geocells) {
         this.geocells = geocells;
     }
-
-	@Override
-	public String getKeyString() {
-		return getLocation().toString();
-	}
-
-	@Override
-	public Point getLocation() {
-		return new Point(latitude, longitude);
-	}
 }
