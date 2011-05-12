@@ -53,7 +53,7 @@ public class GeocellManagerTest {
 		when(persistenceManager.newQuery(ObjectToSave.class, " geocells.contains(geocellsP)")).thenReturn(jdoQuery);
 		when(jdoQuery.execute(any())).thenReturn(queryResults);
 
-		List<ObjectToSave> results = GeocellManager.proximityFetch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
+		List<ObjectToSave> results = GeocellManager.proximitySearch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
 
 		verify(jdoQuery).declareParameters("String geocellsP");
 		assertNotNull(results);
@@ -69,7 +69,7 @@ public class GeocellManagerTest {
 		when(persistenceManager.newQuery(ObjectToSave.class, "baseQuery && geocells.contains(geocellsP)")).thenReturn(jdoQuery);
 		when(jdoQuery.executeWithArray(anyVararg())).thenReturn(queryResults);
 
-		List<ObjectToSave> results = GeocellManager.proximityFetch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
+		List<ObjectToSave> results = GeocellManager.proximitySearch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
 
 		verify(jdoQuery).declareParameters("declaredParameters, String geocellsP");
 		assertNotNull(results);
@@ -89,7 +89,7 @@ public class GeocellManagerTest {
         when(persistenceManager.newQuery(ObjectToSave.class, "baseQuery && geocells.contains(geocellsP)")).thenReturn(jdoQuery);
         when(jdoQuery.executeWithArray(anyVararg())).thenReturn(queryResults);
 
-        List<ObjectToSave> results = GeocellManager.proximityFetch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
+        List<ObjectToSave> results = GeocellManager.proximitySearch(center, 1, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
 
         verify(jdoQuery).declareParameters("declaredParameters, String geocellsP");
         assertNotNull(results);
@@ -116,7 +116,7 @@ public class GeocellManagerTest {
         when(persistenceManager.newQuery(ObjectToSave.class, "baseQuery && geocells.contains(geocellsP)")).thenReturn(jdoQuery);
         when(jdoQuery.executeWithArray(anyVararg())).thenReturn(queryResults1).thenReturn(queryResults2);
 
-        List<ObjectToSave> results = GeocellManager.proximityFetch(center, 2, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
+        List<ObjectToSave> results = GeocellManager.proximitySearch(center, 2, 10.0, ObjectToSave.class, baseQuery, persistenceManager, 1);
 
         verify(jdoQuery, times(2)).declareParameters("declaredParameters, String geocellsP");
         assertNotNull(results);
